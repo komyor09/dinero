@@ -42,5 +42,10 @@ return [
             'label' => 'Payment',
             'description' => 'Payment to one wallet to another wallet',
         ],
-    ]
+    ],
+    'tabs' => [
+        'all' => 'Все',
+        'withdraw' => 'Расходы',
+        'deposit' => 'Доходы',
+    ],
 ];

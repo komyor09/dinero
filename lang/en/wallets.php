@@ -32,5 +32,10 @@ return [
     'types' => [
         WalletTypeEnum::GENERAL->value => 'General',
         WalletTypeEnum::CREDIT_CARD->value => 'Credit Card',
-    ]
+    ],
+    'tabs' => [
+        'all' => 'All',
+        'general' => 'General',
+        'credit_card' => 'Credit Cards',
+    ],
 ];

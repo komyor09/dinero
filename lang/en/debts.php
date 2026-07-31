@@ -39,5 +39,10 @@ return [
             DebtActionTypeEnum::DEBT_INCREASE->value => 'Debt Increase',
             DebtActionTypeEnum::DEBT_INTEREST->value => 'Interest',
         ],
-    ]
+    ],
+    'tabs' => [
+        'all' => 'All',
+        'payable' => 'Payable',
+        'receivable' => 'Receivable',
+    ],
 ];

@@ -26,5 +26,10 @@ return [
             'label' => 'Expense',
             'description' => 'your expense category',
         ],
-    ]
+    ],
+    'tabs' => [
+        'all' => 'All',
+        'expense' => 'Expense',
+        'income' => 'Income',
+    ],
 ];
