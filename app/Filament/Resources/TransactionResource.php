@@ -35,6 +35,30 @@ class TransactionResource extends Resource
 
     protected static ?int $navigationSort = 600;
 
+    // Navigation label (Sidebar)
+    public static function getNavigationLabel(): string
+    {
+        return __('transactions.title');
+    }
+
+    // Singular label (Buttons, headings)
+    public static function getModelLabel(): string
+    {
+        return __('transactions.title_singular');
+    }
+
+    // Plural label (Tables, pages)
+    public static function getPluralModelLabel(): string
+    {
+        return __('transactions.title');
+    }
+
+    // Breadcrumb
+    public static function getBreadcrumb(): string
+    {
+        return __('transactions.title');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -49,16 +73,16 @@ class TransactionResource extends Resource
                         Radio::make('type')
                             ->default(TransactionTypeEnum::WITHDRAW->value)
                             ->formatStateUsing(function (string $state, ?Model $record): string {
-                                if(!blank($record)) {
-                                    if($record->isTransferTransaction) {
+                                if (!blank($record)) {
+                                    if ($record->isTransferTransaction) {
                                         return TransactionTypeEnum::TRANSFER->value;
                                     }
                                 }
                                 return $state;
                             })
-                            ->disableOptionWhen(function(?Model $record){
-                                if(!blank($record)) {
-                                    if($record->isTransferTransaction) {
+                            ->disableOptionWhen(function (?Model $record) {
+                                if (!blank($record)) {
+                                    if ($record->isTransferTransaction) {
                                         return true;
                                     }
                                 }
@@ -81,9 +105,9 @@ class TransactionResource extends Resource
                         TextInput::make('amount')
                             ->label(__('transactions.fields.amount'))
                             ->required()
-                            ->disabled(function(?Model $record){
-                                if(!blank($record)) {
-                                    if($record->isTransferTransaction || $record->isPaymentTransaction) {
+                            ->disabled(function (?Model $record) {
+                                if (!blank($record)) {
+                                    if ($record->isTransferTransaction || $record->isPaymentTransaction) {
                                         return true;
                                     }
                                 }
@@ -91,7 +115,7 @@ class TransactionResource extends Resource
                             })
                             ->autofocus()
                             ->formatStateUsing(function ($state, ?Model $record): string|null {
-                                if(!blank($record)) {
+                                if (!blank($record)) {
                                     return $record->amount_float;
                                 }
                                 return $state;
@@ -109,16 +133,16 @@ class TransactionResource extends Resource
                             ->required()
                             ->columnSpan(2)
                             ->disabled(function (?Model $record): bool {
-                                if(!blank($record)) {
-                                    if($record->isTransferTransaction || $record->isPaymentTransaction) {
+                                if (!blank($record)) {
+                                    if ($record->isTransferTransaction || $record->isPaymentTransaction) {
                                         return true;
                                     }
                                 }
                                 return false;
                             })
                             ->visible(function (Get $get, ?Model $record): bool {
-                                if(!blank($record)) {
-                                    if($record->isTransferTransaction || $record->isPaymentTransaction) {
+                                if (!blank($record)) {
+                                    if ($record->isTransferTransaction || $record->isPaymentTransaction) {
                                         return true;
                                     }
 
@@ -129,13 +153,13 @@ class TransactionResource extends Resource
                         Select::make('category_id')
                             ->label(__('transactions.fields.category'))
                             ->columnSpan(2)
-                            ->relationship('category', 'name', function(Builder $query, Get $get){
+                            ->relationship('category', 'name', function (Builder $query, Get $get) {
                                 $spendType = match ($get('type')) {
                                     TransactionTypeEnum::WITHDRAW->value => SpendTypeEnum::EXPENSE->value,
                                     TransactionTypeEnum::DEPOSIT->value => SpendTypeEnum::INCOME->value,
                                     default => null,
                                 };
-                                if(!is_null($spendType)) {
+                                if (!is_null($spendType)) {
                                     return $query->tenant()->where('type', $spendType);
                                 }
 
@@ -147,15 +171,15 @@ class TransactionResource extends Resource
                                 return in_array($get('type'), [TransactionTypeEnum::DEPOSIT->value, TransactionTypeEnum::WITHDRAW->value]);
                             }),
                         Select::make('from_wallet_id')
-                            ->label( __('transactions.fields.from_wallet'))
-                            ->relationship('wallet', 'name', function(Builder $query, Get $get){
-                                if($get('type') == TransactionTypeEnum::PAYMENT->value) {
+                            ->label(__('transactions.fields.from_wallet'))
+                            ->relationship('wallet', 'name', function (Builder $query, Get $get) {
+                                if ($get('type') == TransactionTypeEnum::PAYMENT->value) {
                                     $query = $query->where('type', WalletTypeEnum::GENERAL->value);
                                 }
                                 return $query;
                             })
                             ->live()
-                            ->columnSpan(function(Get $get, ?Model $record): int {
+                            ->columnSpan(function (Get $get, ?Model $record): int {
                                 return blank($get('from_wallet_id')) ? 2 : 1;
                             })
                             ->searchable()
@@ -164,9 +188,9 @@ class TransactionResource extends Resource
                             ->afterStateUpdated(function (Set $set) {
                                 $set('to_wallet_id', null);
                             })
-                            ->visible(function(Get $get, ?Model $record): bool {
-                                if(!blank($record)) {
-                                    if($record->isTransferTransaction || $record->isPaymentTransaction) {
+                            ->visible(function (Get $get, ?Model $record): bool {
+                                if (!blank($record)) {
+                                    if ($record->isTransferTransaction || $record->isPaymentTransaction) {
                                         return false;
                                     }
                                 }
@@ -174,9 +198,9 @@ class TransactionResource extends Resource
                             }),
                         Select::make('to_wallet_id')
                             ->label(__('transactions.fields.to_wallet'))
-                            ->relationship('wallet', 'name', function(Builder $query, Get $get){
+                            ->relationship('wallet', 'name', function (Builder $query, Get $get) {
                                 $query = $query->where('id', '!=', $get('from_wallet_id'));
-                                if($get('type') == TransactionTypeEnum::PAYMENT->value) {
+                                if ($get('type') == TransactionTypeEnum::PAYMENT->value) {
                                     $query = $query->where('type', WalletTypeEnum::CREDIT_CARD->value);
                                 }
                                 return $query;
@@ -185,8 +209,8 @@ class TransactionResource extends Resource
                             ->preload()
                             ->required()
                             ->visible(function (Get $get, ?Model $record): bool {
-                                if(!blank($record)) {
-                                    if($record->isTransferTransaction || $record->isPaymentTransaction) {
+                                if (!blank($record)) {
+                                    if ($record->isTransferTransaction || $record->isPaymentTransaction) {
                                         return false;
                                     }
                                 }
@@ -195,7 +219,7 @@ class TransactionResource extends Resource
                         Toggle::make('confirmed')
                             ->label(__('transactions.fields.confirmed'))
                             ->default(true)
-                            ->visible(fn (Get $get): bool => in_array($get('type'), [TransactionTypeEnum::DEPOSIT->value, TransactionTypeEnum::WITHDRAW->value])),
+                            ->visible(fn(Get $get): bool => in_array($get('type'), [TransactionTypeEnum::DEPOSIT->value, TransactionTypeEnum::WITHDRAW->value])),
 
                     ]),
                 Forms\Components\Section::make()
@@ -223,15 +247,15 @@ class TransactionResource extends Resource
                 ->sortable(),
             Tables\Columns\TextColumn::make('type')
                 ->badge()
-                ->icon(fn (string $state): string => match ($state) {
+                ->icon(fn(string $state): string => match ($state) {
                     TransactionTypeEnum::WITHDRAW->value => 'lucide-trending-down',
                     TransactionTypeEnum::DEPOSIT->value => 'lucide-trending-up',
                 })
-                ->color(fn (string $state): string => match ($state) {
+                ->color(fn(string $state): string => match ($state) {
                     TransactionTypeEnum::WITHDRAW->value => 'danger',
                     TransactionTypeEnum::DEPOSIT->value => 'warning',
                 })
-                ->formatStateUsing(fn (string $state): string => __("transactions.types.{$state}.label"))
+                ->formatStateUsing(fn(string $state): string => __("transactions.types.{$state}.label"))
                 ->label(__('transactions.fields.type'))
                 ->searchable(),
             Tables\Columns\TextColumn::make('amount_float')

@@ -27,17 +27,19 @@ class ListTransactions extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make()
+            'all' => Tab::make(__('transactions.tabs.all'))
                 ->icon('lucide-calculator')
                 ->badge(Transaction::tenant()->count()),
-            TransactionTypeEnum::WITHDRAW->value => Tab::make()
+
+            TransactionTypeEnum::WITHDRAW->value => Tab::make(__('transactions.tabs.withdraw'))
                 ->icon('lucide-trending-down')
                 ->badge(Transaction::tenant()->where('type', TransactionTypeEnum::WITHDRAW->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', TransactionTypeEnum::WITHDRAW->value)),
-            TransactionTypeEnum::DEPOSIT->value => Tab::make()
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', TransactionTypeEnum::WITHDRAW->value)),
+
+            TransactionTypeEnum::DEPOSIT->value => Tab::make(__('transactions.tabs.deposit'))
                 ->icon('lucide-trending-up')
                 ->badge(Transaction::tenant()->where('type', TransactionTypeEnum::DEPOSIT->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', TransactionTypeEnum::DEPOSIT->value)),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', TransactionTypeEnum::DEPOSIT->value)),
         ];
     }
 }

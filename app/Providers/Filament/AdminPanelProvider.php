@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('hub')
             ->login(Login::class)
             ->colors([
-                'primary' => Color::Sky,
+                'primary' => Color::Lime,
             ])
             ->sidebarWidth('17rem')
             ->favicon(asset('brands/dinero-favicon.png'))

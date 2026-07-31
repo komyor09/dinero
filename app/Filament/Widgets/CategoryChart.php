@@ -23,7 +23,10 @@ class CategoryChart extends ApexChartWidget
      *
      * @var string|null
      */
-    protected static ?string $heading = 'Top Category Transactions';
+    public function getHeading(): ?string
+    {
+        return __('widgets.category_chart.heading');
+    }
 
     protected static ?int $contentHeight = 300;
 
@@ -55,7 +58,7 @@ class CategoryChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'BasicBarChart',
+                    'name' => __('widgets.category_chart.series'),
                     'data' => $transactions->values()->toArray(),
                 ],
             ],

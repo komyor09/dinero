@@ -24,17 +24,19 @@ class ListCategories extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make()
+            'all' => Tab::make(__('categories.tabs.all'))
                 ->icon('lucide-layout-list')
                 ->badge(Category::tenant()->count()),
-            SpendTypeEnum::EXPENSE->value => Tab::make()
+
+            SpendTypeEnum::EXPENSE->value => Tab::make(__('categories.tabs.expense'))
                 ->icon('lucide-trending-down')
                 ->badge(Category::tenant()->where('type', SpendTypeEnum::EXPENSE->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', SpendTypeEnum::EXPENSE->value)),
-            SpendTypeEnum::INCOME->value => Tab::make()
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', SpendTypeEnum::EXPENSE->value)),
+
+            SpendTypeEnum::INCOME->value => Tab::make(__('categories.tabs.income'))
                 ->icon('lucide-trending-up')
                 ->badge(Category::tenant()->where('type', SpendTypeEnum::INCOME->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', SpendTypeEnum::INCOME->value)),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', SpendTypeEnum::INCOME->value)),
         ];
     }
 }

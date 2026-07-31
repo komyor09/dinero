@@ -11,14 +11,15 @@ class EditAccountProfile extends EditTenantProfile
 {
     public static function getLabel(): string
     {
-        return 'Account Info';
+        return __('account.title');
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name'),
+                TextInput::make('name')
+                    ->label(__('account.fields.name')),
             ]);
     }
 }

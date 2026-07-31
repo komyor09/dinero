@@ -24,17 +24,19 @@ class ListWallets extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make()
+            'all' => Tab::make(__('wallets.tabs.all'))
                 ->icon('lucide-wallet')
                 ->badge(Wallet::tenant()->count()),
-            WalletTypeEnum::GENERAL->value => Tab::make()
+
+            WalletTypeEnum::GENERAL->value => Tab::make(__('wallets.tabs.general'))
                 ->icon('badge-dollar-sign')
                 ->badge(Wallet::tenant()->where('type', WalletTypeEnum::GENERAL->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->tenant()->where('type', WalletTypeEnum::GENERAL->value)),
-            WalletTypeEnum::CREDIT_CARD->value => Tab::make()
+                ->modifyQueryUsing(fn(Builder $query) => $query->tenant()->where('type', WalletTypeEnum::GENERAL->value)),
+
+            WalletTypeEnum::CREDIT_CARD->value => Tab::make(__('wallets.tabs.credit_card'))
                 ->icon('lucide-credit-card')
                 ->badge(Wallet::tenant()->where('type', WalletTypeEnum::CREDIT_CARD->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->tenant()->where('type', WalletTypeEnum::CREDIT_CARD->value)),
+                ->modifyQueryUsing(fn(Builder $query) => $query->tenant()->where('type', WalletTypeEnum::CREDIT_CARD->value)),
         ];
     }
 }

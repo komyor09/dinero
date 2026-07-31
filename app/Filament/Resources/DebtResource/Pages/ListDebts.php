@@ -45,17 +45,19 @@ class ListDebts extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make()
+            'all' => Tab::make(__('debts.tabs.all'))
                 ->icon('helping-hand')
                 ->badge(Debt::tenant()->count()),
-            DebtTypeEnum::PAYABLE->value => Tab::make()
+
+            DebtTypeEnum::PAYABLE->value => Tab::make(__('debts.tabs.payable'))
                 ->icon('lucide-trending-down')
                 ->badge(Debt::tenant()->where('type', DebtTypeEnum::PAYABLE->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', DebtTypeEnum::PAYABLE->value)),
-            DebtTypeEnum::RECEIVABLE->value => Tab::make()
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', DebtTypeEnum::PAYABLE->value)),
+
+            DebtTypeEnum::RECEIVABLE->value => Tab::make(__('debts.tabs.receivable'))
                 ->icon('lucide-trending-up')
                 ->badge(Debt::tenant()->where('type', DebtTypeEnum::RECEIVABLE->value)->count())
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', DebtTypeEnum::RECEIVABLE->value)),
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('type', DebtTypeEnum::RECEIVABLE->value)),
         ];
     }
 
@@ -75,7 +77,7 @@ class ListDebts extends ListRecords
             Select::make('action_type')
                 ->label(__('debts.fields.action_type'))
                 ->options(function (Get $get) {
-                    if(blank($get('debt_id'))) {
+                    if (blank($get('debt_id'))) {
                         return [];
                     }
 
@@ -105,7 +107,7 @@ class ListDebts extends ListRecords
     public function makeDebtTransaction($data): void
     {
         try {
-            $amount = (double) $data['amount'];
+            $amount = (float) $data['amount'];
             $actionType = $data['action_type'];
             $happenedAt = $data['happened_at'];
             $method = match ($actionType) {
@@ -119,7 +121,7 @@ class ListDebts extends ListRecords
                 $this->makeInterestTransaction(debt: $debt, amount: $amount, actionType: $actionType, happenedAt: $happenedAt);
             }
 
-            if(!blank($method)) {
+            if (!blank($method)) {
                 $wallet = Wallet::findOrFail($data['wallet_id']);
                 $wallet->{$method}($amount * 100, [
                     'happened_at' => $happenedAt,

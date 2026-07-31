@@ -19,12 +19,17 @@ class TransactionChart extends ApexChartWidget
 
     protected static ?int $sort = 1;
 
+
     /**
      * Widget Title
      *
      * @var string|null
      */
-    protected static ?string $heading = 'Transactions';
+
+    public function getHeading(): ?string
+    {
+        return __('widgets.transaction_chart.heading');
+    }
 
     /**
      * Chart options (series, labels, types, size, animations...)
@@ -63,12 +68,12 @@ class TransactionChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'Deposit',
-                    'data' => $transactions->pluck('deposit')->toArray()
+                    'name' => __('widgets.transaction_chart.deposit'),
+                    'data' => $transactions->pluck('deposit')->toArray(),
                 ],
                 [
-                    'name' => 'Withdrawal',
-                    'data' => $transactions->pluck('withdraw')->toArray()
+                    'name' => __('widgets.transaction_chart.withdrawal'),
+                    'data' => $transactions->pluck('withdraw')->toArray(),
                 ],
             ],
             'plotOptions' => [

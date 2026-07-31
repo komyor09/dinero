@@ -27,7 +27,7 @@ class RegisterAccount extends RegisterTenant
 
     public static function getLabel(): string
     {
-        return 'Register Account';
+        return __('account.register.title');
     }
 
     public function form(Form $form): Form
@@ -35,7 +35,8 @@ class RegisterAccount extends RegisterTenant
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->placeholder('Personal Account'),
+                    ->label(__('account.fields.name'))
+                    ->placeholder(__('account.register.placeholder')),
             ]);
     }
 
